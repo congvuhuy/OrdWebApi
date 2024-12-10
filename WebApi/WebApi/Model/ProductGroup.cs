@@ -12,9 +12,11 @@ namespace WebApi.Model
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ProductGroupId {  get; set; }
         [StringLength(100)]
+        [Required]
         public string Name { get; set; }
+        [Required]
         public string Description { get; set; }
-        public DateTime CreatedDate { get; set; }
+        public DateTime CreatedDate { get; set;}
         public Boolean IsDeleted { get; set; }
         [JsonIgnore]
         public ICollection<Product> Products { get; set;}

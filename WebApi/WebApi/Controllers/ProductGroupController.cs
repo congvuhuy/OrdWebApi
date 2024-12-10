@@ -17,8 +17,8 @@ namespace WebApi.Controllers
 
         public ProductGroupController(ApplicationDbContext context, IMapper mapper)
         {
-            _context = context ?? throw new ArgumentNullException(nameof(context));
-            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            _context = context ;
+            _mapper = mapper ;
         }
         [HttpGet]
         public async Task<IActionResult> getProductGroup()
@@ -35,7 +35,7 @@ namespace WebApi.Controllers
             {
                 return BadRequest("Nhóm sản phẩm không tồn tại");
             }
-            var productDTO = _mapper.Map<ProductDTO>(product);
+            var productDTO = _mapper.Map<ProductGroupDTO>(product);
             return Ok(productDTO);
         }
         [HttpPost]
@@ -46,6 +46,7 @@ namespace WebApi.Controllers
                 return BadRequest("Lỗi");
             }
             var productGroup = _mapper.Map<ProductGroup>(productGroupCreateDTO);
+            productGroup.CreatedDate = DateTime.Now;
             productGroup.Products = null;
 
             _context.ProductGroups.Add(productGroup);

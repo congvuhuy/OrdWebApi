@@ -37,19 +37,11 @@ namespace WebApi.Controllers
             var product = await _context.Products.Include(p => p.ProductGroup).FirstOrDefaultAsync(p => p.ProductId == id);
             if (product == null)
             {
-                return NotFound();
+                return NotFound("Sản phẩm không tồn tại");
             }
             var productDTO = _mapper.Map<ProductDTO>(product);
             return Ok(productDTO);
         }
-        [HttpGet("group/{groupId}")]
-        public async Task<IActionResult> GetProudctByGroupID(int groupId)
-        {
-            var products = await _context.Products.FirstOrDefaultAsync(p=>p.ProductGroupId==groupId);
-            var productDtos=_mapper.Map<ProductDTO>(products);
-            return Ok(productDtos);
-        }
-
         [HttpPost]
         public async Task<IActionResult> CreateProduct(ProductCreateDTO productCreateDTO)
 
@@ -66,6 +58,7 @@ namespace WebApi.Controllers
             }
 
             var product = _mapper.Map<Product>(productCreateDTO);
+            product.CreatedDate = DateTime.Now;
             product.ProductGroup = productGroup;
 
             _context.Products.Add(product);

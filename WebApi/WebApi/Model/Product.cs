@@ -11,9 +11,11 @@ namespace WebApi.Model
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ProductId { get; set; }
         [StringLength(100)]
+        [Required]
         public string Name { get; set; }
-
+        [Required]
         public Decimal Price { get; set; }
+        [Required]
         public int Quantity {  get; set; }
         public DateTime CreatedDate { get; set; }
         public Boolean IsDeleted { get; set; }

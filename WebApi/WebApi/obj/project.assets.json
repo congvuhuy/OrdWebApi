@@ -2711,11 +2711,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Admin\\Desktop\\NetCore\\WebApi\\WebApi\\WebApi.csproj",
+      "projectUniqueName": "C:\\Users\\Admin\\Desktop\\NetCoreApi\\OrdWebApi\\WebApi\\WebApi\\WebApi.csproj",
       "projectName": "WebApi",
-      "projectPath": "C:\\Users\\Admin\\Desktop\\NetCore\\WebApi\\WebApi\\WebApi.csproj",
+      "projectPath": "C:\\Users\\Admin\\Desktop\\NetCoreApi\\OrdWebApi\\WebApi\\WebApi\\WebApi.csproj",
       "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Admin\\Desktop\\NetCore\\WebApi\\WebApi\\obj\\",
+      "outputPath": "C:\\Users\\Admin\\Desktop\\NetCoreApi\\OrdWebApi\\WebApi\\WebApi\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config",

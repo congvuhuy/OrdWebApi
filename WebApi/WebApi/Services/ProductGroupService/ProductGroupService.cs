@@ -19,7 +19,8 @@ namespace WebApi.Services.ProductGroupService
         }
         public async Task AddAsync(ProductGroupCreateDTO productGroupCreateDTO)
         {
-            var ProductGroup = _productGroupRepository.GetByNameAsync(productGroupCreateDTO.Name);
+            var ProductGroup = await _productGroupRepository.GetByNameAsync(productGroupCreateDTO.Name);
+           
             if (ProductGroup != null)
             {
                 throw new InvalidOperationException("Tên nhóm đã tồn tại");
@@ -33,7 +34,7 @@ namespace WebApi.Services.ProductGroupService
         public async Task DeleteAsync(int id)
         {
             var productGroup = await _productGroupRepository.DeleteAsync(id);
-            if (productGroup != null)
+            if (productGroup == null)
             {
                 throw new InvalidOperationException("Nhóm muốn xoá không tồn tại hoặc đã bị xoá");
             }

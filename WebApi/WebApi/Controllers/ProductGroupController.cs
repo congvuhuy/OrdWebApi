@@ -1,10 +1,6 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
 using WebApi.Data;
 using WebApi.DTOs;
-using WebApi.Model;
 using WebApi.Services.ProductGroupService;
 
 namespace WebApi.Controllers
@@ -16,9 +12,10 @@ namespace WebApi.Controllers
         private readonly ApplicationDbContext _context;
         private readonly IProductGroupService _productGroupService;
 
-        public ProductGroupController(ApplicationDbContext context,ProductGroupService productGroupService)
+        public ProductGroupController(ApplicationDbContext context,IProductGroupService productGroupService)
         {
             _productGroupService = productGroupService;
+            _context = context;
         }
         [HttpGet]
         public async Task<IActionResult> getProductGroup()

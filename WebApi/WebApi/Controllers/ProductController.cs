@@ -56,6 +56,10 @@ namespace WebApi.Controllers
             {
                 return BadRequest("Product Group không tồn tại");
             }
+            var productByName = await _context.Products.FirstOrDefaultAsync(p => p.Name == productCreateDTO.Name);
+            if (productByName != null) {
+                return BadRequest("Tên sản phẩm đã tồn tại");
+            }
 
             var product = _mapper.Map<Product>(productCreateDTO);
             product.CreatedDate = DateTime.Now;

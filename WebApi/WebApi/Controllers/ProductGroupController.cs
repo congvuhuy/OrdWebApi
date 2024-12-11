@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using WebApi.Data;
 using WebApi.DTOs;
 using WebApi.Model;
+using WebApi.Services.ProductGroupService;
 
 namespace WebApi.Controllers
 {
@@ -13,80 +14,60 @@ namespace WebApi.Controllers
     public class ProductGroupController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
-        private readonly IMapper _mapper;
+        private readonly IProductGroupService _productGroupService;
 
-        public ProductGroupController(ApplicationDbContext context, IMapper mapper)
+        public ProductGroupController(ApplicationDbContext context,ProductGroupService productGroupService)
         {
-            _context = context ;
-            _mapper = mapper ;
+            _productGroupService = productGroupService;
         }
         [HttpGet]
         public async Task<IActionResult> getProductGroup()
         {
-            var productGroupList = await _context.ProductGroups.Include(p => p.Products).ToListAsync();
-            var productGroupDTO = _mapper.Map<IEnumerable<ProductGroupDTO>>(productGroupList);
-            return Ok(productGroupDTO);
+            var productGroups=await _productGroupService.GetAllAsync();
+            return Ok(productGroups);
         }
         [HttpGet("{id}")]
         public async Task<IActionResult> GetProductGroupById(int id)
         {
-            var product = await _context.ProductGroups.Include(p => p.Products).FirstOrDefaultAsync(p => p.ProductGroupId == id);
-            if (product == null)
-            {
-                return BadRequest("Nhóm sản phẩm không tồn tại");
-            }
-            var productDTO = _mapper.Map<ProductGroupDTO>(product);
-            return Ok(productDTO);
+            var productGroup = await _productGroupService.GetAsync(id);
+            return Ok(productGroup);
         }
         [HttpPost]
         public async Task<IActionResult> PostProductGroup(ProductGroupCreateDTO productGroupCreateDTO)
         {
-            if (productGroupCreateDTO == null)
-            {
-                return BadRequest("Lỗi");
-            }
-            var productGroupByName = await _context.ProductGroups.FirstOrDefaultAsync(p => p.Name == productGroupCreateDTO.Name);
-            if (productGroupByName != null)
-            {
-                return BadRequest("Tên group đã tồn tại");
-            }
-            var productGroup = _mapper.Map<ProductGroup>(productGroupCreateDTO);
-            productGroup.CreatedDate = DateTime.Now;
-            productGroup.Products = null;
-
-            _context.ProductGroups.Add(productGroup);
-            await _context.SaveChangesAsync();
-
-            var newProductGroupDTO = _mapper.Map<ProductGroupDTO>(productGroup);
-            return CreatedAtAction(nameof(GetProductGroupById), new { id = productGroup.ProductGroupId }, newProductGroupDTO);
+            await _productGroupService.AddAsync(productGroupCreateDTO);
+            return Ok("Thêm mới thành công");
         }
         [HttpPut("{id}")]
         public async Task<IActionResult>UpdateProductGroup(int id,ProductGroupCreateDTO productGroupUpdateDTO)
         {
-            if(productGroupUpdateDTO == null)
+            var product = await _productGroupService.GetAsync(id);
+            if (product == null)
             {
-                return BadRequest("Lỗi");
+                return NotFound("Nhóm sản phẩm không tồn tại.");
             }
-            var productGroup= await _context.ProductGroups.FirstOrDefaultAsync(pg=>pg.ProductGroupId==id);
-            if (productGroup == null)
+            try
             {
-                return BadRequest("Nhóm sản phẩm không tồn tại");
+                await _productGroupService.UpdateAsync(id, productGroupUpdateDTO);
+                return NoContent();
             }
-            _mapper.Map(productGroupUpdateDTO, productGroup);
-            await _context.SaveChangesAsync();
-            return NoContent();
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProductGroup(int id)
         {
-            var productGroup=await _context.ProductGroups.FindAsync(id);
-            if (productGroup == null)
+            try
             {
-                return BadRequest("Nhóm sản phẩm không tồn tại");
+                await _productGroupService.DeleteAsync(id);
+                return Ok();
             }
-            productGroup.IsDeleted = true;
-            await _context.SaveChangesAsync();
-            return NoContent();
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
     }

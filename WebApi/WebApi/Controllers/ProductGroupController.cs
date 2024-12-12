@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using WebApi.Data;
 using WebApi.DTOs;
 using WebApi.Services.ProductGroupService;
@@ -12,31 +13,53 @@ namespace WebApi.Controllers
         private readonly ApplicationDbContext _context;
         private readonly IProductGroupService _productGroupService;
 
-        public ProductGroupController(ApplicationDbContext context,IProductGroupService productGroupService)
+        public ProductGroupController(ApplicationDbContext context, IProductGroupService productGroupService)
         {
             _productGroupService = productGroupService;
             _context = context;
         }
         [HttpGet]
+        //[Authorize(Roles = "Customer,Admin")]
         public async Task<IActionResult> getProductGroup()
         {
-            var productGroups=await _productGroupService.GetAllAsync();
+            var productGroups = await _productGroupService.GetAllAsync();
             return Ok(productGroups);
         }
+
         [HttpGet("{id}")]
+        //[Authorize(Roles="Customer,Admin")]
         public async Task<IActionResult> GetProductGroupById(int id)
         {
+           
             var productGroup = await _productGroupService.GetAsync(id);
             return Ok(productGroup);
         }
         [HttpPost]
+        //[Authorize(Roles = "Admin")]
+
         public async Task<IActionResult> PostProductGroup(ProductGroupCreateDTO productGroupCreateDTO)
         {
-            await _productGroupService.AddAsync(productGroupCreateDTO);
-            return Ok("Thêm mới thành công");
+            try
+            {
+                var result = await _productGroupService.AddAsync(productGroupCreateDTO);
+                if (result == 1)
+                {
+                    return Ok("Thêm mới thành công");
+                }
+                return BadRequest("Thêm mới thất bại");
+                
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);  
+            }
+           
         }
+
         [HttpPut("{id}")]
-        public async Task<IActionResult>UpdateProductGroup(int id,ProductGroupCreateDTO productGroupUpdateDTO)
+        //[Authorize(Roles = "Admin")]
+
+        public async Task<IActionResult> UpdateProductGroup(int id, ProductGroupCreateDTO productGroupUpdateDTO)
         {
             var product = await _productGroupService.GetAsync(id);
             if (product == null)
@@ -54,12 +77,17 @@ namespace WebApi.Controllers
             }
         }
         [HttpDelete("{id}")]
+        //[Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteProductGroup(int id)
         {
             try
             {
-                await _productGroupService.DeleteAsync(id);
-                return Ok();
+                var result=await _productGroupService.DeleteAsync(id);
+                if(result == 1)
+                {
+                    return Ok("Xoá thành công");
+                }
+                return BadRequest("Xoá không thành công");
             }
             catch (InvalidOperationException ex)
             {

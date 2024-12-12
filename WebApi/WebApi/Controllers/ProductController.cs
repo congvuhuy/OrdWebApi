@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using WebApi.Data;
 using WebApi.Services.ProductService;
 using WebApi.Services.ProductGroupService;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WebApi.Controllers
 {
@@ -22,51 +23,71 @@ namespace WebApi.Controllers
         {
             _productService= productService;
         }
-
         [HttpGet]
+        //[Authorize(Roles="Customer,Admin")]
         public async Task<IActionResult> GetProduct()
         {
             var products=await _productService.GetAllAsync();
             return Ok(products);
         }
-
+        //[Authorize(Roles = "Customer,Admin")]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetProductById(int id)
         {
             var product = await _productService.GetAsync(id);
             return Ok(product);
         }
+        //[Authorize(Roles = "Admin")]
+
         [HttpPost]
         public async Task<IActionResult> CreateProduct(ProductCreateDTO productCreateDTO)
         {
-           await _productService.AddAsync(productCreateDTO);
-            return Ok();
-        }
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateProduct(int id, ProductCreateDTO productCreateDTO)
-        {
-
-            var product = await _productService.GetAsync(id);
-            if (product == null)
-            {
-                return NotFound("Sản phẩm không tồn tại.");
-            }
             try
             {
-                await _productService.UpdateAsync(id,productCreateDTO);
-                return NoContent();
-            }
-            catch (Exception ex)
+                var result = await _productService.AddAsync(productCreateDTO);
+                if (result == 0)
+                {
+                    return BadRequest("Thêm mới không thành công");
+                }
+                //return CreatedAtAction(nameof(GetProductById), new { id = productCreateDTO.ProductGroupId }, productCreateDTO);
+                return Ok("Thêm mới thành công");
+            }catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
+           
         }
+        //[Authorize(Roles = "Admin")]
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateProduct(int id, ProductCreateDTO productCreateDTO)
+        {
+            try
+            {
+                var result = await _productService.UpdateAsync(id, productCreateDTO);
+                if (result == 1)
+                {
+                    return NoContent();
+                }
+                return NotFound();
+            }catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            
+        }
+        //[Authorize(Roles = "Admin")]
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProduct(int id)
         {
             try { 
-                var deletedProduct = await _productService.DeleteAsync(id); 
-                return Ok(deletedProduct); 
+                var result = await _productService.DeleteAsync(id); 
+                if (result == 1) {
+                    return Ok("Xoá thành công");
+                }
+                return BadRequest("Xoá không thành công");
+              
             } 
             catch (InvalidOperationException ex) { 
                 return BadRequest(ex.Message); 

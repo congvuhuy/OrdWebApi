@@ -6,8 +6,8 @@ namespace WebApi.Services.ProductService
     {
         Task<IEnumerable<ProductDTO>> GetAllAsync();
         Task<ProductDTO> GetAsync(int id);
-        Task AddAsync(ProductCreateDTO productCreateDTO);
-        Task UpdateAsync(int id, ProductCreateDTO newProductDTO);
-        Task<ProductDTO> DeleteAsync(int id);
+        Task <int> AddAsync(ProductCreateDTO productCreateDTO);
+        Task <int> UpdateAsync(int id, ProductCreateDTO newProductDTO);
+        Task<int> DeleteAsync(int id);
     }
 }

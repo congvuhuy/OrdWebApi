@@ -17,7 +17,7 @@ namespace WebApi.Services.ProductGroupService
             _productGroupRepository = productGroupRepository;
             _mapper = mapper;
         }
-        public async Task AddAsync(ProductGroupCreateDTO productGroupCreateDTO)
+        public async Task<int> AddAsync(ProductGroupCreateDTO productGroupCreateDTO)
         {
             var ProductGroup = await _productGroupRepository.GetByNameAsync(productGroupCreateDTO.Name);
            
@@ -27,19 +27,13 @@ namespace WebApi.Services.ProductGroupService
             }
             var productGroup = _mapper.Map<ProductGroup>(productGroupCreateDTO);
             productGroup.CreatedDate = DateTime.Now;
-            productGroup.Products = null;
-            await _productGroupRepository.AddAsync(productGroup);
+            return await _productGroupRepository.AddAsync(productGroup);
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task<int> DeleteAsync(int id)
         {
-            var productGroup = await _productGroupRepository.DeleteAsync(id);
-            if (productGroup == null)
-            {
-                throw new InvalidOperationException("Nhóm muốn xoá không tồn tại hoặc đã bị xoá");
-            }
-
-            _mapper.Map<ProductGroupDTO>(productGroup);
+            var result = await _productGroupRepository.DeleteAsync(id);
+            return result;
         }
 
         public async Task<IEnumerable<ProductGroupDTO>> GetAllAsync()
@@ -54,15 +48,14 @@ namespace WebApi.Services.ProductGroupService
             return  _mapper.Map<ProductGroupDTO>(productGroup);
         }
 
-        public async Task UpdateAsync(int id ,ProductGroupCreateDTO newProductGroupDTO)
+        public async Task<int> UpdateAsync(int id ,ProductGroupCreateDTO newProductGroupDTO)
         {
             
             var existingProductGroup = await _productGroupRepository.GetByIdAsync(id);
             _mapper.Map(newProductGroupDTO, existingProductGroup);
             existingProductGroup.ProductGroupId = id;
-            await _productGroupRepository.UpdateAsync(existingProductGroup);
-            _mapper.Map<ProductGroupDTO>(existingProductGroup);
-
+            existingProductGroup.Products = null;
+            return await _productGroupRepository.UpdateAsync(existingProductGroup);
         }
     }
 }

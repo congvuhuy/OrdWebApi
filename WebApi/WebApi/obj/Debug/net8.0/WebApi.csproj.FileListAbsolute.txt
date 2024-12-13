@@ -369,3 +369,9 @@ C:\Users\Admin\Desktop\NetCoreApi\OrdWebApi\WebApi\WebApi\bin\Debug\net8.0\Micro
 C:\Users\Admin\Desktop\NetCoreApi\OrdWebApi\WebApi\WebApi\bin\Debug\net8.0\System.IdentityModel.Tokens.Jwt.dll
 C:\Users\Admin\Desktop\NetCoreApi\OrdWebApi\WebApi\WebApi\bin\Debug\net8.0\Dapper.dll
 D:\Ord\OrdWebApi\WebApi\WebApi\bin\Debug\net8.0\Dapper.dll
+C:\Users\Admin\Desktop\NetCoreApi\OrdWebApi\WebApi\WebApi\bin\Debug\net8.0\BouncyCastle.Cryptography.dll
+C:\Users\Admin\Desktop\NetCoreApi\OrdWebApi\WebApi\WebApi\bin\Debug\net8.0\MailKit.dll
+C:\Users\Admin\Desktop\NetCoreApi\OrdWebApi\WebApi\WebApi\bin\Debug\net8.0\MimeKit.dll
+C:\Users\Admin\Desktop\NetCoreApi\OrdWebApi\WebApi\WebApi\bin\Debug\net8.0\System.Formats.Asn1.dll
+C:\Users\Admin\Desktop\NetCoreApi\OrdWebApi\WebApi\WebApi\bin\Debug\net8.0\System.Security.Cryptography.Pkcs.dll
+C:\Users\Admin\Desktop\NetCoreApi\OrdWebApi\WebApi\WebApi\bin\Debug\net8.0\runtimes\win\lib\net8.0\System.Security.Cryptography.Pkcs.dll

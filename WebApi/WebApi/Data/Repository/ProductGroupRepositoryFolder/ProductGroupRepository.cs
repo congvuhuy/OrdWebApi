@@ -16,13 +16,13 @@ namespace WebApi.Data.Repository.ProductGroupRepositoryFolder
 
             _dbConnection = dbConnection;
         }
-        public async Task<ProductGroup> AddAsync(ProductGroup productGroup)
+        public async Task<ProductGroup> AddAsync(ProductGroup productGroup, IDbTransaction transaction)
         {
             var Sql = "INSERT INTO ProductGroup(Name,Description,CreatedDate,IsDeleted) " +
               "values (@Name,@Description,@CreatedDate,@IsDeleted);" +
               "SELECT LAST_INSERT_ID();";
 
-            var productGroupId = await _dbConnection.ExecuteScalarAsync<int>(Sql, productGroup); 
+            var productGroupId = await _dbConnection.ExecuteScalarAsync<int>(Sql, productGroup,transaction); 
             productGroup.ProductGroupId = productGroupId; 
             return productGroup;
         }
@@ -45,10 +45,10 @@ namespace WebApi.Data.Repository.ProductGroupRepositoryFolder
             return await _dbConnection.QueryFirstOrDefaultAsync<ProductGroup>(Sql, new { Id = id });
         }
 
-        public async Task<ProductGroup> GetByNameAsync(string name)
+        public async Task<ProductGroup> GetByNameAsync(string name, IDbTransaction transaction)
         {
             var Sql = "Select * FROM ProductGroup Where Name=@Name";
-            return await _dbConnection.QueryFirstOrDefaultAsync<ProductGroup>(Sql, new { Name = name });
+            return await _dbConnection.QueryFirstOrDefaultAsync<ProductGroup>(Sql, new { Name = name },transaction);
         }
 
         public async Task<int> UpdateAsync(ProductGroup productGroup)

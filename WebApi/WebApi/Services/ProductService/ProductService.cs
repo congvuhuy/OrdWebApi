@@ -21,6 +21,7 @@ namespace WebApi.Services.ProductService
             _mapper = mapper;
             _unitOfWork = unitOfWork;
         }
+        //thêm sản phẩm
         public async Task<int> AddAsync(ProductCreateDTO productCreateDTO)
         {
             var productGroup = await _productGroupService.GetAsync(productCreateDTO.ProductGroupId);
@@ -28,7 +29,7 @@ namespace WebApi.Services.ProductService
             {
                 throw new InvalidOperationException("Nhóm sản phẩm không tồn tại");
             }
-            var exitProducts = await _productRepository.GetByNameAsync(productCreateDTO.Name);
+            var exitProducts = await _productRepository.GetByNameAsync(productCreateDTO.Name, null);
             foreach(var exitProduct in exitProducts)
             {
                 if (exitProduct.ProductGroupId == productCreateDTO.ProductGroupId)
@@ -37,9 +38,9 @@ namespace WebApi.Services.ProductService
                 }
             }
             var product = _mapper.Map<Product>(productCreateDTO); 
-            return await _productRepository.AddAsync(product);
+            return await _productRepository.AddAsync(product, null);
         }
-
+        //xoá sản phẩm theo id
         public async Task<int> DeleteAsync(int id)
         {
             var result = await _unitOfWork.ProductRepository.DeleteAsync(id); 
@@ -48,19 +49,20 @@ namespace WebApi.Services.ProductService
             }      
             return result;
         }
-
+        //Lấy tất cả sản phẩm
         public async Task<IEnumerable<ProductDTO>> GetAllAsync()
         {
             var products=await _productRepository.GetAllAsyns();
             return _mapper.Map<IEnumerable<ProductDTO>>(products);
         }
-
+        //lấy sản phẩm theo id
         public async Task<ProductDTO> GetAsync(int id)
         {
             var prouduct=await _productRepository.GetByIdAsync(id);
             return _mapper.Map<ProductDTO>(prouduct);
         }
 
+        //sửa sản phẩm
         public async Task<int> UpdateAsync(int id ,ProductCreateDTO newProductDTO)
         {
             var existingProduct = await _productRepository.GetByIdAsync(id);
@@ -77,9 +79,13 @@ namespace WebApi.Services.ProductService
             existingProduct.ProductId = id;
             return await  _unitOfWork.ProductRepository.UpdateAsync(existingProduct);
         }
+
+        //thêm nhiều sản phẩm
         public async Task AddMultipleAsync(MultipleProductsCreateDTO multipleProductsCreateDTO)
         {
+           
             await _unitOfWork.BeginTransactionAsync();
+            var transaction = _unitOfWork.GetTransaction();
             try
             {
                     var productGroup = new ProductGroup
@@ -89,16 +95,13 @@ namespace WebApi.Services.ProductService
                         CreatedDate = DateTime.UtcNow,
                         IsDeleted = multipleProductsCreateDTO.ProductGroups.IsDeleted
                     };
-                    var exitingGroup = await _unitOfWork.ProductGroupRepository.GetByNameAsync(productGroup.Name);
+                    var exitingGroup = await _unitOfWork.ProductGroupRepository.GetByNameAsync(productGroup.Name,transaction);
 
                     if (exitingGroup != null)
                     {
                         throw new InvalidOperationException("Tên nhóm đã tồn tại");
                     }
-                    await _unitOfWork.ProductGroupRepository.AddAsync(productGroup);
-
-                    // Thêm các sản phẩm liên quan tới nhóm sản phẩm này
-                    //var products = multipleProductsCreateDTO.Products.Where(p => p.ProductGroupId == productGroup.ProductGroupId).ToList();
+                    await _unitOfWork.ProductGroupRepository.AddAsync(productGroup, transaction);
                     foreach (var productDto in multipleProductsCreateDTO.Products)
                     {
                         var product = new Product
@@ -110,7 +113,7 @@ namespace WebApi.Services.ProductService
                             IsDeleted = productDto.IsDeleted,
                             ProductGroupId = productGroup.ProductGroupId
                         };
-                        var exitProducts = await _productRepository.GetByNameAsync(product.Name);
+                        var exitProducts = await _productRepository.GetByNameAsync(product.Name,transaction);
                         foreach (var exitProduct in exitProducts)
                         {
                             if (exitProduct.ProductGroupId == product.ProductGroupId)
@@ -118,7 +121,7 @@ namespace WebApi.Services.ProductService
                                 throw new InvalidOperationException("Trùng tên sản phẩm");
                             }
                         }
-                        await _unitOfWork.ProductRepository.AddAsync(product);
+                        await _unitOfWork.ProductRepository.AddAsync(product,transaction);
                     }
                 
 

@@ -1,4 +1,5 @@
-﻿using WebApi.Data.Repository.CommonRepository;
+﻿using System.Data;
+using WebApi.Data.Repository.CommonRepository;
 using WebApi.Model;
 
 namespace WebApi.Data.Repository.ProductGroupRepositoryFolder
@@ -7,9 +8,9 @@ namespace WebApi.Data.Repository.ProductGroupRepositoryFolder
     {
         Task<IEnumerable<ProductGroup>> GetAllAsyns();
         Task<ProductGroup> GetByIdAsync(int id);
-        Task<ProductGroup> AddAsync(ProductGroup productGroup);
+        Task<ProductGroup> AddAsync(ProductGroup productGroup, IDbTransaction transaction);
         Task<int> UpdateAsync(ProductGroup productGroup);
         Task<int> DeleteAsync(int id);
-        Task<ProductGroup> GetByNameAsync(string name);
+        Task<ProductGroup> GetByNameAsync(string name, IDbTransaction transaction);
     }
 }

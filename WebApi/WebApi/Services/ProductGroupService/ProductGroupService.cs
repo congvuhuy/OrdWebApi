@@ -22,7 +22,7 @@ namespace WebApi.Services.ProductGroupService
         }
         public async Task<ProductGroup> AddAsync(ProductGroupCreateDTO productGroupCreateDTO)
         {
-            var ProductGroup = await _productGroupRepository.GetByNameAsync(productGroupCreateDTO.Name);
+            var ProductGroup = await _productGroupRepository.GetByNameAsync(productGroupCreateDTO.Name,null);
            
             if (ProductGroup != null)
             {
@@ -30,7 +30,7 @@ namespace WebApi.Services.ProductGroupService
             }
             var productGroup = _mapper.Map<ProductGroup>(productGroupCreateDTO);
             productGroup.CreatedDate = DateTime.Now;
-            return await _unitOfWork.ProductGroupRepository.AddAsync(productGroup);
+            return await _unitOfWork.ProductGroupRepository.AddAsync(productGroup,null);
         }
         public async Task<int> DeleteAsync(int id)
         {

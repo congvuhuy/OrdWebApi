@@ -7,6 +7,7 @@ namespace WebApi.Data.Repository.UserRepository
     {
         Task<IdentityResult> RegisterAsync(ApplicationUser user, string password);
         Task<SignInResult> LoginAsync(string email, string password);
+        //Task<string> ResetPassWord(string password);
 
     }
 }

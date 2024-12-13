@@ -1,4 +1,5 @@
-﻿using WebApi.Data.Repository.ProductGroupRepositoryFolder;
+﻿using System.Data;
+using WebApi.Data.Repository.ProductGroupRepositoryFolder;
 using WebApi.Data.Repository.ProductRepositoryFolder;
 
 namespace WebApi.Data.Repository.UnitOfWorkFolder
@@ -9,6 +10,9 @@ namespace WebApi.Data.Repository.UnitOfWorkFolder
         IProductGroupRepository ProductGroupRepository { get; }
         Task BeginTransactionAsync();
         Task CompleteAsync();
+
         Task RollbackAsync();
+        IDbTransaction GetTransaction(); 
+        IDbConnection GetConnection();
     }
 }

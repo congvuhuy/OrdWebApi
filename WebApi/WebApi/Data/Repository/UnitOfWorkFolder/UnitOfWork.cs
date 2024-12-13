@@ -42,6 +42,8 @@ namespace WebApi.Data.Repository.UnitOfWorkFolder
             _connection.Close(); 
             await Task.CompletedTask;
         }
+        public IDbTransaction GetTransaction() => _transaction; 
+        public IDbConnection GetConnection() => _connection;
 
         public void Dispose()
         {

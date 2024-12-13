@@ -19,12 +19,12 @@ namespace WebApi.Data.Repository.ProductRepositoryFolder
             _dbConnection = dbConnection;
         }
 
-        public async Task<int> AddAsync(Product product)
+        public async Task<int> AddAsync(Product product, IDbTransaction transaction)
         {
             var Sql = "INSERT INTO Product(Name,Price,Quantity,CreatedDate,IsDeleted,ProductGroupId) " +
                 "values (@Name,@Price,@Quantity,@CreatedDate,@IsDeleted,@ProductGroupId)";
 
-            return await _dbConnection.ExecuteAsync(Sql, product);
+            return await _dbConnection.ExecuteAsync(Sql, product,transaction);
         }
         public async Task<int> DeleteAsync(int id)
         {
@@ -44,10 +44,10 @@ namespace WebApi.Data.Repository.ProductRepositoryFolder
             return await _dbConnection.QueryFirstOrDefaultAsync<Product>(Sql, new { Id = id });
         }
 
-        public async Task<IEnumerable<Product>> GetByNameAsync(string name)
+        public async Task<IEnumerable<Product>> GetByNameAsync(string name, IDbTransaction transaction)
         {
             var Sql = "Select * FROM Product Where Name=@Name";
-            return await _dbConnection.QueryAsync<Product>(Sql, new { Name = name });
+            return await _dbConnection.QueryAsync<Product>(Sql, new { Name = name }, transaction);
         }
 
         public async Task<int> UpdateAsync(Product product)

@@ -6,7 +6,7 @@ namespace WebApi.Data.Repository.ProductRepositoryFolder
 {
     public interface IProductRepository
     {
-        Task<Product> GetByNameAsync(string name);
+        Task<IEnumerable<Product>> GetByNameAsync(string name);
         Task<IEnumerable<Product>> GetAllAsyns();
         Task<Product> GetByIdAsync(int id);
         Task<int> AddAsync(Product product);

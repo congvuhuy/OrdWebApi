@@ -2,6 +2,7 @@
 using System.Data;
 using WebApi.Data.Repository.ProductGroupRepositoryFolder;
 using WebApi.Data.Repository.ProductRepositoryFolder;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace WebApi.Data.Repository.UnitOfWorkFolder
 {
@@ -9,19 +10,15 @@ namespace WebApi.Data.Repository.UnitOfWorkFolder
     {
         private readonly IDbConnection _connection;
         private IDbTransaction _transaction;
-        private readonly IProductRepository _productRepository;
-        private readonly IProductGroupRepository _productGroupRepository;
+        public IProductRepository ProductRepository { get; }
+        public IProductGroupRepository ProductGroupRepository { get; }
 
-        public UnitOfWork(IConfiguration configuration)
+        public UnitOfWork(IDbConnection connection, IProductRepository productRepository, IProductGroupRepository productGroupRepository)
         {
-            _connection = new MySqlConnection(configuration.GetConnectionString("DefaultConnection"));
-            _productRepository = new ProductRepository(configuration);
-            _productGroupRepository = new ProductGroupRepository(configuration);
+            _connection = connection; 
+            ProductRepository = productRepository; 
+            ProductGroupRepository = productGroupRepository;
         }
-
-        public IProductRepository ProductRepository => _productRepository;
-        public IProductGroupRepository ProductGroupRepository => _productGroupRepository;
-
         public async Task BeginTransactionAsync()
         {
             if (_connection.State == ConnectionState.Closed)
@@ -29,18 +26,21 @@ namespace WebApi.Data.Repository.UnitOfWorkFolder
                  _connection.Open();
             }
             _transaction = _connection.BeginTransaction();
+            await Task.CompletedTask;
         }
 
         public async Task CompleteAsync()
         {
-            await Task.Run(() => _transaction.Commit());
-            _connection.Close();
+            _transaction.Commit(); 
+            _connection.Close(); 
+            await Task.CompletedTask;
         }
 
         public async Task RollbackAsync()
         {
-            await Task.Run(() => _transaction.Rollback());
-            _connection.Close();
+            _transaction.Rollback(); 
+            _connection.Close(); 
+            await Task.CompletedTask;
         }
 
         public void Dispose()

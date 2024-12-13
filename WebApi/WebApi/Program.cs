@@ -22,6 +22,7 @@ using WebApi.Data.Repository.UnitOfWorkFolder;
 var builder = WebApplication.CreateBuilder(args);
 
 // 
+builder.Services.AddScoped<IDbConnection>(sp => new MySqlConnection(builder.Configuration.GetConnectionString("DefaultConnection")));
 //Add MySQL Db
 builder.Services.AddDbContext<ApplicationDbContext>(options => 
 options.UseMySql(

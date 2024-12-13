@@ -99,7 +99,7 @@ namespace WebApi.Controllers
             try
             {
                 await _productService.AddMultipleAsync(dto);
-                return Ok("Products and Product Groups added successfully");
+                return Ok("Thêm thành công");
             }
             catch (Exception ex)
             {

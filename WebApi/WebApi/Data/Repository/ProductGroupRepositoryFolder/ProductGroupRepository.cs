@@ -11,16 +11,20 @@ namespace WebApi.Data.Repository.ProductGroupRepositoryFolder
     public class ProductGroupRepository : IProductGroupRepository
     {
         private readonly IDbConnection _dbConnection;
-        public ProductGroupRepository(IConfiguration configuration)
+        public ProductGroupRepository(IDbConnection dbConnection)
         {
-            _dbConnection = new MySqlConnection(configuration.GetConnectionString("DefaultConnection"));
+
+            _dbConnection = dbConnection;
         }
-        public async Task<int> AddAsync(ProductGroup productGroup)
+        public async Task<ProductGroup> AddAsync(ProductGroup productGroup)
         {
             var Sql = "INSERT INTO ProductGroup(Name,Description,CreatedDate,IsDeleted) " +
-              "values (@Name,@Description,@CreatedDate,@IsDeleted)";
+              "values (@Name,@Description,@CreatedDate,@IsDeleted);" +
+              "SELECT LAST_INSERT_ID();";
 
-            return await _dbConnection.ExecuteAsync(Sql, productGroup);
+            var productGroupId = await _dbConnection.ExecuteScalarAsync<int>(Sql, productGroup); 
+            productGroup.ProductGroupId = productGroupId; 
+            return productGroup;
         }
 
         public async Task<int> DeleteAsync(int id)

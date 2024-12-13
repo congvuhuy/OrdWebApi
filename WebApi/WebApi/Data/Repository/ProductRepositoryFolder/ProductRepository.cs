@@ -13,9 +13,10 @@ namespace WebApi.Data.Repository.ProductRepositoryFolder
     public class ProductRepository : IProductRepository
     {
         private readonly IDbConnection _dbConnection;
-        public ProductRepository(IConfiguration configuration)
+        private readonly IDbTransaction _transaction;
+        public ProductRepository(IDbConnection dbConnection)
         {
-            _dbConnection = new MySqlConnection(configuration.GetConnectionString("DefaultConnection"));
+            _dbConnection = dbConnection;
         }
 
         public async Task<int> AddAsync(Product product)
@@ -43,10 +44,10 @@ namespace WebApi.Data.Repository.ProductRepositoryFolder
             return await _dbConnection.QueryFirstOrDefaultAsync<Product>(Sql, new { Id = id });
         }
 
-        public async Task<Product> GetByNameAsync(string name)
+        public async Task<IEnumerable<Product>> GetByNameAsync(string name)
         {
             var Sql = "Select * FROM Product Where Name=@Name";
-            return await _dbConnection.QueryFirstOrDefaultAsync<Product>(Sql, new { Name = name });
+            return await _dbConnection.QueryAsync<Product>(Sql, new { Name = name });
         }
 
         public async Task<int> UpdateAsync(Product product)

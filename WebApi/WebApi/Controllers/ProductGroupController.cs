@@ -42,7 +42,7 @@ namespace WebApi.Controllers
             try
             {
                 var result = await _productGroupService.AddAsync(productGroupCreateDTO);
-                if (result == 1)
+                if (result !=null)
                 {
                     return Ok("Thêm mới thành công");
                 }

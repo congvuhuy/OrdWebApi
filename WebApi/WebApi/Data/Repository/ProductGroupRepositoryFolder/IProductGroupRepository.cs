@@ -1,7 +1,7 @@
 ﻿using WebApi.Data.Repository.CommonRepository;
 using WebApi.Model;
 
-namespace WebApi.Data.Repository.GroupRepository
+namespace WebApi.Data.Repository.ProductGroupRepositoryFolder
 {
     public interface IProductGroupRepository
     {

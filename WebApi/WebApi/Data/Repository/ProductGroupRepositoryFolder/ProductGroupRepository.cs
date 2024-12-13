@@ -3,10 +3,10 @@ using Microsoft.EntityFrameworkCore;
 using MySqlConnector;
 using System.Data;
 using WebApi.Data.Repository.CommonRepository;
-using WebApi.Data.Repository.GroupRepository;
+using WebApi.Data.Repository.ProductGroupRepositoryFolder;
 using WebApi.Model;
 
-namespace WebApi.Data.Repository.ProductGroupRepository
+namespace WebApi.Data.Repository.ProductGroupRepositoryFolder
 {
     public class ProductGroupRepository : IProductGroupRepository
     {

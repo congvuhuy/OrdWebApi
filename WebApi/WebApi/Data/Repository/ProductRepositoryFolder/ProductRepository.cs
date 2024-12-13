@@ -8,7 +8,7 @@ using WebApi.Data.Repository.CommonRepository;
 using WebApi.DTOs;
 using WebApi.Model;
 
-namespace WebApi.Data.Repository.ProductRepository
+namespace WebApi.Data.Repository.ProductRepositoryFolder
 {
     public class ProductRepository : IProductRepository
     {

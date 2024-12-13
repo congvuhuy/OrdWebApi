@@ -368,3 +368,4 @@ C:\Users\Admin\Desktop\NetCoreApi\OrdWebApi\WebApi\WebApi\bin\Debug\net8.0\Micro
 C:\Users\Admin\Desktop\NetCoreApi\OrdWebApi\WebApi\WebApi\bin\Debug\net8.0\Microsoft.IdentityModel.Tokens.dll
 C:\Users\Admin\Desktop\NetCoreApi\OrdWebApi\WebApi\WebApi\bin\Debug\net8.0\System.IdentityModel.Tokens.Jwt.dll
 C:\Users\Admin\Desktop\NetCoreApi\OrdWebApi\WebApi\WebApi\bin\Debug\net8.0\Dapper.dll
+D:\Ord\OrdWebApi\WebApi\WebApi\bin\Debug\net8.0\Dapper.dll

@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
-using WebApi.Data.Repository.GroupRepository;
-using WebApi.Data.Repository.ProductGroupRepository;
-using WebApi.Data.Repository.ProductRepository;
+using WebApi.Data.Repository.ProductGroupRepositoryFolder;
+using WebApi.Data.Repository.ProductRepositoryFolder;
+using WebApi.Data.Repository.UnitOfWorkFolder;
 using WebApi.DTOs;
 using WebApi.Model;
 
@@ -12,10 +12,13 @@ namespace WebApi.Services.ProductService
         private readonly IProductRepository _productRepository;
         private readonly IProductGroupRepository _productGroupRepository;
         private readonly IMapper _mapper;
-        public ProductService(IProductRepository productRepository,IProductGroupRepository productGroupRepository ,IMapper mapper) {
+        private readonly IUnitOfWork _unitOfWork;
+
+        public ProductService(IUnitOfWork unitOfWork,IProductRepository productRepository,IProductGroupRepository productGroupRepository ,IMapper mapper) {
             _productRepository= productRepository;
             _productGroupRepository = productGroupRepository;
             _mapper = mapper;
+            _unitOfWork = unitOfWork;
         }
         public async Task<int> AddAsync(ProductCreateDTO productCreateDTO)
         {
@@ -60,6 +63,50 @@ namespace WebApi.Services.ProductService
             _mapper.Map(newProductDTO, existingProduct);
             existingProduct.ProductId = id;
             return await _productRepository.UpdateAsync(existingProduct);
+        }
+        public async Task AddMultipleAsync(MultipleProductsCreateDTO multipleProductsCreateDTO)
+        {
+            await _unitOfWork.BeginTransactionAsync();
+
+            try
+            {
+                // Thêm từng nhóm sản phẩm
+                foreach (var productGroupDto in multipleProductsCreateDTO.ProductGroups)
+                {
+                    var productGroup = new ProductGroup
+                    {
+                        Name = productGroupDto.Name,
+                        Description = productGroupDto.Description,
+                        CreatedDate = DateTime.UtcNow,
+                        IsDeleted = productGroupDto.IsDeleted
+                    };
+                    await _unitOfWork.ProductGroupRepository.AddAsync(productGroup);
+
+                    // Thêm các sản phẩm liên quan tới nhóm sản phẩm này
+                    var products = multipleProductsCreateDTO.Products.Where(p => p.ProductGroupId == productGroup.ProductGroupId).ToList();
+                    foreach (var productDto in products)
+                    {
+                        var product = new Product
+                        {
+                            Name = productDto.Name,
+                            Price = productDto.Price,
+                            Quantity = productDto.Quantity,
+                            CreatedDate = DateTime.UtcNow,
+                            IsDeleted = productDto.IsDeleted,
+                            ProductGroupId = productGroup.ProductGroupId
+                        };
+                        await _unitOfWork.ProductRepository.AddAsync(product);
+                    }
+                }
+
+                // Commit transaction
+                await _unitOfWork.CompleteAsync();
+            }
+            catch
+            {
+                await _unitOfWork.RollbackAsync();
+                throw;
+            }
         }
     }
 }

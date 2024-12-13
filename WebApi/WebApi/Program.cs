@@ -1,9 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using WebApi.Data;
 using WebApi.Services.ProductService;
-using WebApi.Data.Repository.GroupRepository;
-using WebApi.Data.Repository.ProductGroupRepository;
-using WebApi.Data.Repository.ProductRepository;
+using WebApi.Data.Repository.ProductGroupRepositoryFolder;
+using WebApi.Data.Repository.ProductRepositoryFolder;
 using WebApi.Data.Repository.CommonRepository;
 using WebApi.Services.ProductGroupService;
 using Microsoft.AspNetCore.Identity;
@@ -18,6 +17,7 @@ using Microsoft.OpenApi.Models;
 using Microsoft.Extensions.Configuration;
 using MySqlConnector;
 using System.Data;
+using WebApi.Data.Repository.UnitOfWorkFolder;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -64,7 +64,7 @@ builder.Services.AddSwaggerGen(c => {
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IProductGroupRepository, ProductGroupRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
-
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 //Add service
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IProductGroupService, ProductGroupService>();

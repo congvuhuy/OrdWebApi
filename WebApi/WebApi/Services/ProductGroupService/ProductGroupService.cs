@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
-using WebApi.Data.Repository.GroupRepository;
-using WebApi.Data.Repository.ProductRepository;
+using WebApi.Data.Repository.ProductGroupRepositoryFolder;
+using WebApi.Data.Repository.ProductRepositoryFolder;
+using WebApi.Data.Repository.UnitOfWorkFolder;
 using WebApi.DTOs;
 using WebApi.Model;
 
@@ -11,11 +12,13 @@ namespace WebApi.Services.ProductGroupService
         private readonly IProductRepository _productRepository;
         private readonly IProductGroupRepository _productGroupRepository;
         private readonly IMapper _mapper;
-        public ProductGroupService(IProductRepository productRepository, IProductGroupRepository productGroupRepository, IMapper mapper)
+        private readonly IUnitOfWork _unitOfWork;
+        public ProductGroupService(IUnitOfWork unitOfWork,IProductRepository productRepository, IProductGroupRepository productGroupRepository, IMapper mapper)
         {
             _productRepository = productRepository;
             _productGroupRepository = productGroupRepository;
             _mapper = mapper;
+            _unitOfWork = unitOfWork;
         }
         public async Task<int> AddAsync(ProductGroupCreateDTO productGroupCreateDTO)
         {
@@ -29,6 +32,8 @@ namespace WebApi.Services.ProductGroupService
             productGroup.CreatedDate = DateTime.Now;
             return await _productGroupRepository.AddAsync(productGroup);
         }
+
+        
 
         public async Task<int> DeleteAsync(int id)
         {

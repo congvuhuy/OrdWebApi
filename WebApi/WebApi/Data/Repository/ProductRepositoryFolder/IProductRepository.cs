@@ -2,7 +2,7 @@
 using WebApi.DTOs;
 using WebApi.Model;
 
-namespace WebApi.Data.Repository.ProductRepository
+namespace WebApi.Data.Repository.ProductRepositoryFolder
 {
     public interface IProductRepository
     {
@@ -12,5 +12,6 @@ namespace WebApi.Data.Repository.ProductRepository
         Task<int> AddAsync(Product product);
         Task<int> UpdateAsync(Product product);
         Task<int> DeleteAsync(int id);
+
     }
 }

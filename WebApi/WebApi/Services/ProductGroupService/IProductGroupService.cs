@@ -9,5 +9,6 @@ namespace WebApi.Services.ProductGroupService
         Task <int> AddAsync (ProductGroupCreateDTO productGroupCreateDTO);
         Task <int> UpdateAsync(int id, ProductGroupCreateDTO newProductGroupDTO);
         Task <int> DeleteAsync(int id);
+        
     }
 }

@@ -93,6 +93,19 @@ namespace WebApi.Controllers
                 return BadRequest(ex.Message); 
             }
         }
+        [HttpPost("add-multiple")]
+        public async Task<IActionResult> AddMultiple([FromBody] MultipleProductsCreateDTO dto)
+        {
+            try
+            {
+                await _productService.AddMultipleAsync(dto);
+                return Ok("Products and Product Groups added successfully");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
     }
 }

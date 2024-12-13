@@ -9,5 +9,6 @@ namespace WebApi.Services.ProductService
         Task <int> AddAsync(ProductCreateDTO productCreateDTO);
         Task <int> UpdateAsync(int id, ProductCreateDTO newProductDTO);
         Task<int> DeleteAsync(int id);
+        Task AddMultipleAsync(MultipleProductsCreateDTO multipleProductsCreateDTO);
     }
 }
